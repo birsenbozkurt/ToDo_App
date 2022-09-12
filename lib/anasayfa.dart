@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/entity/isler.dart';
-import 'package:todo_app/views/detay_sayfa.dart';
-import 'package:todo_app/views/kayit_sayfa.dart';
+import 'package:todo_app/isler.dart';
+import 'package:todo_app/detay_sayfa.dart';
+import 'package:todo_app/kayit_sayfa.dart';
 
 class Anasayfa extends StatefulWidget {
   const Anasayfa({super.key});

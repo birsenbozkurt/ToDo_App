@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/cubit/is_kayit_cubit.dart';
 
 class KayitSayfa extends StatefulWidget {
   const KayitSayfa({super.key});
@@ -12,9 +14,9 @@ class _KayitSayfaState extends State<KayitSayfa> {
   var tfYapilacakIs = TextEditingController();
   var tfIsNo = TextEditingController();
 
-  Future<void> kayit(String yapilacak_is, String is_no) async {
-    print("İş Kayıt : ${yapilacak_is} - ${is_no}");
-  }
+  // Future<void> kayit(String yapilacak_is, String is_no) async {
+  //   print("İş Kayıt : ${yapilacak_is} - ${is_no}");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class _KayitSayfaState extends State<KayitSayfa> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    kayit(tfYapilacakIs.text, tfIsNo.text);
+                    context.read<IsKayitCubit>().kayit(tfYapilacakIs.text, tfIsNo.text);
                   },
                   child: const Text("KAYDET"))
             ],

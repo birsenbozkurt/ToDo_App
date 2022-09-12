@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:todo_app/entity/isler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/cubit/is_detay_cubit.dart';
+import 'package:todo_app/isler.dart';
 
 class DetaySayfa extends StatefulWidget {
   Isler yapilacak;
@@ -27,7 +28,7 @@ class _DetaySayfaState extends State<DetaySayfa> {
     tfIsNo.text = yapilacak.is_no;
   }
 
-  Future<void> guncelle(int yapilacak_id, String yapilacak_is) async {}
+  // Future<void> guncelle(int yapilacak_id, String yapilacak_is) async {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +58,7 @@ class _DetaySayfaState extends State<DetaySayfa> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    guncelle(widget.yapilacak.yapilacak_id, tfYapilacakIs.text);
+                    context.read<IsDetayCubit>().guncelle(widget.yapilacak.yapilacak_id, tfYapilacakIs.text, tfIsNo.text);
                   },
                   child: const Text("GÜNCELLE"))
             ],
