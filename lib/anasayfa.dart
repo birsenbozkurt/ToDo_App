@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/cubit/anasayfa_cubit.dart';
 import 'package:todo_app/isler.dart';
 import 'package:todo_app/detay_sayfa.dart';
 import 'package:todo_app/kayit_sayfa.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Anasayfa extends StatefulWidget {
   const Anasayfa({super.key});
@@ -13,19 +15,11 @@ class Anasayfa extends StatefulWidget {
 
 class _AnasayfaState extends State<Anasayfa> {
   bool aramaYapiliyorMu = false;
-  Future<List<Isler>> tumIsleriGoster() async {
-    var islerListesi = <Isler>[];
-    var i1 = Isler(yapilacak_id: 1, yapilacak_is: "Kargo", is_no: "1");
-    var i2 = Isler(yapilacak_id: 2, yapilacak_is: "İngilizce Çalışma", is_no: "2");
-    var i3 = Isler(yapilacak_id: 3, yapilacak_is: "Kitaplık Düzenleme", is_no: "3");
-    var i4 = Isler(yapilacak_id: 4, yapilacak_is: "Spor", is_no: "4");
-    var i5 = Isler(yapilacak_id: 5, yapilacak_is: "Alışveriş", is_no: "5");
-    islerListesi.add(i1);
-    islerListesi.add(i2);
-    islerListesi.add(i3);
-    islerListesi.add(i4);
-    islerListesi.add(i5);
-    return islerListesi;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AnasayfaCubit>().isleriYukle();
   }
 
   @override
@@ -39,6 +33,7 @@ class _AnasayfaState extends State<Anasayfa> {
                 decoration: const InputDecoration(hintText: " Ara"),
                 onChanged: (aramaSonucu) {
                   //harf girdikçe sildikçe çalışacak yapı
+                  context.read<AnasayfaCubit>().ara(aramaSonucu);
                 },
               )
             : const Text(
@@ -54,6 +49,7 @@ class _AnasayfaState extends State<Anasayfa> {
                     setState(() {
                       aramaYapiliyorMu = false;
                     });
+                    context.read<AnasayfaCubit>().isleriYukle();
                   },
                   icon: Icon(Icons.clear),
                   iconSize: 35.0,
@@ -69,13 +65,11 @@ class _AnasayfaState extends State<Anasayfa> {
                   color: Colors.orange[700])
         ],
       ),
-      body: FutureBuilder<List<Isler>>(
-        future: tumIsleriGoster(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var islerListesi = snapshot.data;
+      body: BlocBuilder<AnasayfaCubit, List<Isler>>(
+        builder: (context, islerListesi) {
+          if (islerListesi.isNotEmpty) {
             return ListView.builder(
-              itemCount: islerListesi!.length,
+              itemCount: islerListesi.length,
               itemBuilder: (context, index) {
                 var yapilacak = islerListesi[index];
                 return GestureDetector(
@@ -85,7 +79,9 @@ class _AnasayfaState extends State<Anasayfa> {
                         MaterialPageRoute(
                             builder: ((context) => DetaySayfa(
                                   yapilacak: yapilacak,
-                                ))));
+                                )))).then((value) {
+                      context.read<AnasayfaCubit>().isleriYukle();
+                    });
                   },
                   child: Card(
                     color: Colors.blueGrey[100],
@@ -102,7 +98,9 @@ class _AnasayfaState extends State<Anasayfa> {
                                 content: Text("${yapilacak.yapilacak_is} silinsin mi ? "),
                                 action: SnackBarAction(
                                   label: "Evet",
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    context.read<AnasayfaCubit>().sil(yapilacak.yapilacak_id);
+                                  },
                                 ),
                               ));
                             },
@@ -122,14 +120,9 @@ class _AnasayfaState extends State<Anasayfa> {
         icon: const Icon(Icons.add),
         label: Text("Kayıt"),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: ((context) => const KayitSayfa())));
-          //  var yapilacak = Isler(yapilacak_id: 1, yapilacak_is: "Kargo", is_no: "1");
-          //         Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: ((context) => DetaySayfa(
-          //                       yapilacak: yapilacak,
-          //                     ))));
+          Navigator.push(context, MaterialPageRoute(builder: ((context) => const KayitSayfa()))).then((value) {
+            context.read<AnasayfaCubit>().isleriYukle();
+          });
         },
       ),
     );
